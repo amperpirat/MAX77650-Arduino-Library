@@ -37,7 +37,6 @@
 
 #include "MAX77650.h"
 
-
 /**********************************************************************
 *@brief MAX77650 - The MAX77650/MAX77651 provide highly-integrated battery charging and 
 *power supply solutions for low-power wearable applications where size and efficiency 
@@ -61,7 +60,87 @@
 **********************************************************************/
 
 boolean MAX77650_init(void){
-    Wire2.begin();
+   //Baseline Initialization following rules printed in MAX77650 Programmres Guide Chapter 4 Page 5  
+   if (MAX77650_debug) Serial.print("Set Main Bias to normal Mode: ");
+   if (MAX77650_setSBIA_LPM(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //Set Main Bias to normal Mode   
+   if (MAX77650_debug) Serial.print("Set On/Off-Button to push-button-mode: ");
+   if (MAX77650_setnEN_MODE(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //set on/off-button to push-button
+   if (MAX77650_debug) Serial.print("Set nEN input debounce time to 30ms: ");
+   if (MAX77650_setDBEN_nEN(true)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //set on/off-button to push-button
+   if (MAX77650_debug) Serial.print("Comparing part-numbers: ");
+   if (MAX77650_getDIDM() == PMIC_partnumber) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");     //checking partnumbers
+   if (MAX77650_debug) Serial.print("Checking OTP options: ");
+   if (MAX77650_getCID() != MAX77650_CID) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");     //checking OTP options
+   if (MAX77650_debug) Serial.print("Checking LDO dropout Interrupt: ");
+   if (!(MAX77650_getDOD_R())) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //checking LDO dropout INT
+   if (MAX77650_debug) Serial.print("Checking Thermal Alarm 1: ");
+   if (!(MAX77650_getTJAL1_R())) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //checking Thermal Alarm 1
+   if (MAX77650_debug) Serial.print("Checking Thermal Alarm 2: ");
+   if (!(MAX77650_getTJAL2_R())) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //checking Thermal Alarm 2
+   //Values for NTC beta=3800K; Battery-values are for 1s 303759 with 600mAh
+   if (MAX77650_debug) Serial.print("Set the VCOLD JEITA Temperature Threshold to 0°C: ");
+   if (MAX77650_setTHM_COLD(2)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   //0°C
+   if (MAX77650_debug) Serial.print("Set the VCOOL JEITA Temperature Threshold to 15°C: ");
+   if (MAX77650_setTHM_COOL(3)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   //15°C
+   if (MAX77650_debug) Serial.print("Set the VWARM JEITA Temperature Threshold to 45°C: ");
+   if (MAX77650_setTHM_WARM(2)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   //45°C
+   if (MAX77650_debug) Serial.print("Set the VHOT JEITA Temperature Threshold to 60°C: ");
+   if (MAX77650_setTHM_HOT(3)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //60°C
+   if (MAX77650_debug) Serial.print("Set CHGIN regulation voltage to 4.00V: ");
+   if (MAX77650_setVCHGIN_MIN(0)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed"); //
+   if (MAX77650_debug) Serial.print("Set CHGIN Input Current Limit to 300mA: ");
+   if (MAX77650_setICHGIN_LIM(0)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed"); //300mA
+   if (MAX77650_debug) Serial.print("Set the prequalification charge current to 10%: ");
+   if (MAX77650_setI_PQ(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   //10%
+   if (MAX77650_debug) Serial.print("Set Battery prequalification voltage threshold to 3.0V: ");
+   if (MAX77650_setCHG_PQ(7)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");        //3.0V
+   if (MAX77650_debug) Serial.print("Set Charger Termination Current to 15% of of fast charge current: ");
+   if (MAX77650_setI_TERM(3)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");        //15%
+   if (MAX77650_debug) Serial.print("Set Topoff timer value to 0 minutes: ");
+   if (MAX77650_setT_TOPOFF(0)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");      //0 minutes
+   if (MAX77650_debug) Serial.print("Set the die junction temperature regulation point to 60°C: ");
+   if (MAX77650_setTJ_REG(0)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");        //60°C Tj
+   if (MAX77650_debug) Serial.print("Set System voltage regulation to 4.50V: ");
+   if (MAX77650_setVSYS_REG(0x10)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   //Vsys=4.5V
+   if (MAX77650_debug) Serial.print("Set the fast-charge constant current value to 300mA: ");
+   if (MAX77650_setCHG_CC(0x3f)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");     //300mA
+   if (MAX77650_debug) Serial.print("Set the fast-charge safety timer to 3h: ");
+   if (MAX77650_setT_FAST_CHG(1)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //3h
+   if (MAX77650_debug) Serial.print("Set IFAST-CHG_JEITA to 300mA: ");
+   if (MAX77650_setCHG_CC_JEITA(0x3f)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed"); //300mA
+   if (MAX77650_debug) Serial.print("Set Thermistor enable bit: ");
+   if (MAX77650_setTHM_EN(true)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");     //enable the thermistor monitoring
+   if (MAX77650_debug) Serial.print("Set fast-charge battery regulation voltage to 4.20V: ");
+   if (MAX77650_setCHG_CV(0x18)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");     //4.20V
+   if (MAX77650_debug) Serial.print("Set USB not in power down: ");
+   if (MAX77650_setUSBS(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");      //USBS not suspended
+   if (MAX77650_debug) Serial.print("Set the modified VFAST-CHG to 4.00V: ");
+   if (MAX77650_setCHG_CV_JEITA(0x10)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed"); //4.0V
+   if (MAX77650_debug) Serial.print("Selects the battery discharge current full-scale current value to 300mA: ");
+   if (MAX77650_setIMON_DISCHG_SCALE(0x0A)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed"); //300mA
+   if (MAX77650_debug) Serial.print("Disable the analog MUX output: ");
+   if (MAX77650_setMUX_SEL(0)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //AMUX=off
+   if (MAX77650_debug) Serial.print("Set the Charger to Enable: ");
+   if (MAX77650_setCHG_EN(true)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  //enable the Charger
+  
+   if (MAX77650_debug) Serial.print("Disable SIMO Buck-Boost Channel 0 Active-Discharge: ");
+   if (MAX77650_setADE_SBB0(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  
+   if (MAX77650_debug) Serial.print("Disable SIMO Buck-Boost Channel 1 Active-Discharge: ");
+   if (MAX77650_setADE_SBB1(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  
+   if (MAX77650_debug) Serial.print("Disable SIMO Buck-Boost Channel 2 Active-Discharge: ");
+   if (MAX77650_setADE_SBB1(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  
+   if (MAX77650_debug) Serial.print("Set SIMO Buck-Boost to maximum drive strength: ");
+   if (MAX77650_setDRV_SBB(0b00)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   
+   if (MAX77650_debug) Serial.print("Set SIMO Buck-Boost Channel 0 Peak Current Limit to 500mA: ");
+   if (MAX77650_setIP_SBB0(0b00)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  
+   if (MAX77650_debug) Serial.print("Set SIMO Buck-Boost Channel 1 Peak Current Limit to 500mA: ");
+   if (MAX77650_setIP_SBB1(0b00)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");  
+   if (MAX77650_debug) Serial.print("Set SIMO Buck-Boost Channel 2 Peak Current Limit to 500mA: ");
+   if (MAX77650_setIP_SBB2(0b00)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   
+   if (MAX77650_debug) Serial.print("Set SIMO Buck-Boost Channel 2 to on while in stand-by-mode: ");
+   if (MAX77650_setEN_SBB2(0b110)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");   
+           
+   if (MAX77650_debug) Serial.println("End Initialisation of MAX32620FTHR Board");     
 }
 
 int MAX77650_read_register(int ADDR){
@@ -317,25 +396,25 @@ boolean MAX77650_getDIR(void){ //Returns GPIO Direction
 
 //Charger Interrupt Status Register 0x01
 boolean MAX77650_getSYS_CNFG_I(void){ //Returns System voltage configuration error interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 6) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 6) & 0b00000001);    
 }
 boolean MAX77650_getSYS_CTRL_I(void){ //Returns Minimum System Voltage Regulation-loop related interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 5) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 5) & 0b00000001);    
 }
 boolean MAX77650_getCHGIN_CTRL_I(void){ //Returns CHGIN control-loop related interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 4) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 4) & 0b00000001);    
 }
 boolean MAX77650_getnTJ_REG_I(void){ //Returns Die junction temperature regulation interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 3) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 3) & 0b00000001);    
 }
 boolean MAX77650_getCHGIN_I(void){ //Returns CHGIN related interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 2) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 2) & 0b00000001);    
 }
 boolean MAX77650_getCHG_I(void){ //Returns Charger related interrupt
-   return ((MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) >> 1) & 0b00000001);    
+   return ((MAX77650_read_register(MAX77650_INT_CHG_ADDR) >> 1) & 0b00000001);    
 }
 boolean MAX77650_getTHM_I(void){ //Returns Thermistor related interrupt
-   return (MAX77650_read_register(MAX77650_CNFG_GPIO_ADDR) & 0b00000001);    
+   return (MAX77650_read_register(MAX77650_INT_CHG_ADDR) & 0b00000001);    
 }
 
 //Charger Interrupt Mask Register 0x07

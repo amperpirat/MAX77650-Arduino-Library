@@ -37,6 +37,8 @@
 * 
 **********************************************************************/
 
+#ifndef MAX77650_H
+#define MAX77650_H
 
 #include "Arduino.h"
 #include <Wire.h>
@@ -66,9 +68,9 @@
 
 // Project specific definitions *** adapt to your requirements! ***
 #define PMIC_partnumber 0x00  //placed PMIC part-numer on the board: MAX77650 or MAX77651
-#define MAX77650_CID 0x78                  //OTP option
-
-#define MAX77650_ADDR 0x48   //alternate ADDR is 0x40
+#define MAX77650_CID 0x78     //OTP option
+#define MAX77650_ADDR 0x48    //alternate ADDR is 0x40
+#define MAX77650_debug true
 
 //***** Begin MAX77650 Register Definitions *****
 #define MAX77650_CNFG_GLBL_ADDR 0x10     //Global Configuration Register; Reset Value OTP                           ***erledigt***
@@ -143,7 +145,7 @@ boolean MAX77650_getVSYS_MIN_STAT(void); //Returns Minimum System Voltage Regula
 boolean MAX77650_getTJ_REG_STAT(void); //Returns Maximum Junction Temperature Regulation Loop Status; Return Value: 0=no event; 1=The maximum junction temperature regulation loop has engaged to regulate the junction temperature less than TJ-REG
 byte MAX77650_getTHM_DTLS(void); //Returns Battery Temperature Details; Return Value: Battery Temperature Details
 byte MAX77650_getCHG_DTLS(void); //Returns Charger Details
-byte MAX77650_getCHGIN_DTLS(void); //Returns CHGIN Status Details
+byte MAX77650_getCHGIN_DTLS(void); //Returns Charger Input Status Details
 boolean MAX77650_getCHG(void); //Returns Quick Charger Status
 boolean MAX77650_getTIME_SUS(void); //Returns Time Suspend Indicator
 
@@ -402,6 +404,6 @@ boolean MAX77650_setDIR(boolean); //Sets GPIO Direction
 boolean MAX77650_setINT_M_CHG(byte); //Sets Global Interrupt Mask Register
 
 
-
+#endif
 
 
