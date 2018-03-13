@@ -35,7 +35,9 @@
 **********************************************************************/
 
 
-#include "MAX77650.h"
+#include <MAX77650-Arduino-Library.h>
+
+
 
 /**********************************************************************
 *@brief MAX77650 - The MAX77650/MAX77651 provide highly-integrated battery charging and 
@@ -58,8 +60,17 @@
 *https://www.maximintegrated.com/en/products/power/battery-management/MAX77650.html
 *https://www.maximintegrated.com/en/app-notes/index.mvp/id/6428
 **********************************************************************/
-
-boolean MAX77650_init(void){
+   
+   
+   boolean MAX77650_init(void){
+   //Init I2C Interface
+    if (MAX77650_I2C_port == 0)
+     Wire.begin();
+    if (MAX77650_I2C_port == 1)
+     Wire1.begin();
+    if (MAX77650_I2C_port == 2)
+     Wire2.begin();		
+	 
    //Baseline Initialization following rules printed in MAX77650 Programmres Guide Chapter 4 Page 5  
    if (MAX77650_debug) Serial.print("Set Main Bias to normal Mode: ");
    if (MAX77650_setSBIA_LPM(false)) if (MAX77650_debug) Serial.println("okay"); else if (MAX77650_debug) Serial.println("failed");    //Set Main Bias to normal Mode   
@@ -145,23 +156,55 @@ boolean MAX77650_init(void){
 
 int MAX77650_read_register(int ADDR){
   int retval = -1;   
-  Wire2.beginTransmission(MAX77650_ADDR);
-  Wire2.write(ADDR);
-  Wire2.endTransmission();
-  Wire2.requestFrom(MAX77650_ADDR,1);
-  if (Wire2.available()<=1)
-    retval = (Wire2.read());
+
+  if (MAX77650_I2C_port == 0){
+   Wire.beginTransmission(MAX77650_ADDR);
+   Wire.write(ADDR);
+   Wire.endTransmission();
+   Wire.requestFrom(MAX77650_ADDR,1);
+   if (Wire.available()<=1)
+     retval = (Wire.read());  	
+  }
+
+  if (MAX77650_I2C_port == 1){
+   Wire1.beginTransmission(MAX77650_ADDR);
+   Wire1.write(ADDR);
+   Wire1.endTransmission();
+   Wire1.requestFrom(MAX77650_ADDR,1);
+   if (Wire1.available()<=1)
+     retval = (Wire1.read());  	
+  }
+
+  if (MAX77650_I2C_port == 2){
+   Wire2.beginTransmission(MAX77650_ADDR);
+   Wire2.write(ADDR);
+   Wire2.endTransmission();
+   Wire2.requestFrom(MAX77650_ADDR,1);
+   if (Wire2.available()<=1)
+     retval = (Wire2.read());  	
+   }
 }
 
 byte MAX77650_write_register(int ADDR, int data){
   int retval = -1;   
-  Wire2.beginTransmission(MAX77650_ADDR);
-  //delay(100);           // To-Do: Do we need these delays here?!
-  Wire2.write(ADDR); 
-  //delay(100);
-  Wire2.write(data); 
-  //delay(100);
-  Wire2.endTransmission();
+  if (MAX77650_I2C_port == 0){  
+   Wire.beginTransmission(MAX77650_ADDR);
+   Wire.write(ADDR); 
+   Wire.write(data); 
+   Wire.endTransmission();
+  }  
+  if (MAX77650_I2C_port == 1){  
+   Wire1.beginTransmission(MAX77650_ADDR);
+   Wire1.write(ADDR); 
+   Wire1.write(data); 
+   Wire1.endTransmission();
+  }  
+  if (MAX77650_I2C_port == 2){  
+   Wire2.beginTransmission(MAX77650_ADDR);
+   Wire2.write(ADDR); 
+   Wire2.write(data); 
+   Wire2.endTransmission();
+  }
 }
 
 boolean MAX77650_getDIDM(void){
