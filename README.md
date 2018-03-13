@@ -8,8 +8,8 @@ The devices include other features such as current sinks for driving LED indicat
 ## Getting Started
 
 To get started just clone the project into your library folder, add the library and you can use the functions provided. See also "Installing" for further details. More ressources can be found here:
-https://www.maximintegrated.com/en/products/power/battery-management/MAX77650.html
-https://www.maximintegrated.com/en/app-notes/index.mvp/id/6428
+* https://www.maximintegrated.com/en/products/power/battery-management/MAX77650.html
+* https://www.maximintegrated.com/en/app-notes/index.mvp/id/6428
 
 The provided examples were writen and tested to suit the MAX32620FTHR board (https://www.maximintegrated.com/en/products/microcontrollers/MAX32620FTHR.html) but should work on any other board using the MAX77650.
 
