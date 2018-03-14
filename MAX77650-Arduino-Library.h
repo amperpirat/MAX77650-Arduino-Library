@@ -36,6 +36,7 @@
 * 0.1.0       21.11.2017      initial code
 * 0.2.0       27.11.2017      added functions
 * 0.3.0       07.03.2018      bugfixes
+* 0.4.0       14.03.2018      bugfixes: Interrupt registers are RC (read-clear) and cannot be read bit-by-bit; this is valid for register 0x00, 0x01 and 0x04; corrected wrong register-address in function read CID; cleaned init-function (deleted baseline-init - see examples)
 * 
 **********************************************************************/
 
@@ -127,13 +128,7 @@ boolean MAX77650_getDebounceStatusnEN0(void); //Returns Debounced Status of nEN 
 boolean MAX77650_getDebounceStatusPWR_HLD(void); //Returns Debounced Status of PWR_HLD input; Return Value: 0=logic low; 1=logic high
 
 //Flag Register (ERCFLAG) related reads
-boolean MAX77650_getPWR_HLD_RST(void); //Returns whether Reset Source was PWR_HLD; Return Value: 0=no event; 1=RESET Source: PWR_HLD
-boolean MAX77650_getSFT_CRST_F(void); //Returns whether Reset Source was CRST_F; Return Value: 0=no event; 1=RESET Source: Software Cold Reset
-boolean MAX77650_getSFT_OFF_F(void); //Returns whether Reset Source was OFF_F; Return Value: 0=no event; 1=RESET Source: Software Off Flag
-boolean MAX77650_getMRST(void); //Returns whether Reset Source was MRST; Return Value: 0=no event; 1=RESET Source: Manual Reset Timer
-boolean MAX77650_getSYSUVLO(void); //Returns whether Reset Source was SYSUVLO; Return Value: 0=no event; 1=RESET Source: System Undervoltage Lockout
-boolean MAX77650_getSYSOVLO(void); //Returns whether Reset Source was SYSOVLO; Return Value: 0=no event; 1=RESET Source: System Overvoltage Lockout
-boolean MAX77650_getTOVLD(void); //Returns whether Reset Source was TOVLD; Return Value: 0=no event; 1=RESET Source: Thermal Overload
+byte MAX77650_getERCFLAG(void); //Returns the ERCFLAG Register 0x04
 
 //Register reads related to ChipID
 byte MAX77650_getChipID(void); // Return Value: 1=MAX77650; 2=MAX77651; -1=error reading ChipID
@@ -180,13 +175,7 @@ boolean MAX77650_getDBEN_nEN(void); //Returns Debounce Timer Enable for the nEN 
 byte MAX77650_getSFT_RST(void); //Returns Software Reset Functions.
 
 //Global Interrupt Status Register 0x00
-boolean MAX77650_getDOD_R(void); //Returns LDO Dropout Detector Rising Interrupt
-boolean MAX77650_getTJAL2_R(void); //Returns Thermal Alarm 2 Rising Interrupt
-boolean MAX77650_getTJAL1_R(void); //Returns Thermal Alarm 1 Rising Interrupt
-boolean MAX77650_getnEN_R(void); //Returns nEN Rising Interrupt
-boolean MAX77650_getnEN_F(void); //Returns nEN Falling Interrupt
-boolean MAX77650_getGPI_R(void); //Returns GPI Rising Interrupt
-boolean MAX77650_getGPI_F(void); //Returns GPI Falling Interrupt
+byte MAX77650_getINT_GLBL(void); //Returns Interrupt Status Register 0x00
 
 //Global Interrupt Mask Register 0x06
 byte MAX77650_getINT_M_GLBL(void); //Returns Global Interrupt Mask Register
@@ -199,13 +188,7 @@ boolean MAX77650_getDI(void); //Returns GPIO Digital Input Value
 boolean MAX77650_getDIR(void); //Returns GPIO Direction
 
 //Charger Interrupt Status Register 0x01
-boolean MAX77650_getSYS_CNFG_I(void); //Returns System voltage configuration error interrupt
-boolean MAX77650_getSYS_CTRL_I(void); //Returns Minimum System Voltage Regulation-loop related interrupt
-boolean MAX77650_getCHGIN_CTRL_I(void); //Returns CHGIN control-loop related interrupt
-boolean MAX77650_getnTJ_REG_I(void); //Returns Die junction temperature regulation interrupt
-boolean MAX77650_getCHGIN_I(void); //Returns CHGIN related interrupt
-boolean MAX77650_getCHG_I(void); //Returns Charger related interrupt
-boolean MAX77650_getTHM_I(void); //Returns Thermistor related interrupt
+byte MAX77650_getINT_CHG(void); //Returns Charger Interrupt Status Register 0x01
 
 //Charger Interrupt Mask Register 0x07
 byte MAX77650_getINT_M_CHG(void); //Returns Global Interrupt Mask Register
