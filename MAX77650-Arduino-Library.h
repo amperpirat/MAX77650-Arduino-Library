@@ -38,6 +38,7 @@
 * 0.3.0       07.03.2018      bugfixes
 * 0.4.0       14.03.2018      bugfixes: Interrupt registers are RC (read-clear) and cannot be read bit-by-bit; this is valid for register 0x00, 0x01 and 0x04; corrected wrong register-address in function read CID; cleaned init-function (deleted baseline-init - see examples)
 * 1.0.0	   14.03.2018	     code-review and finished work
+* 1.0.1	   22.03.2018      bugfix: fixed address of register in function MAX77650_getCID; added two more examples
 * 
 **********************************************************************/
 

@@ -487,7 +487,7 @@ boolean MAX77650_getEN_LED_MSTR(void){ //Returns Master LED Enable Bit
 
 //CID Register
 byte MAX77650_getCID(void){ // Returns the OTP programmed Chip Identification Code
-  return (MAX77650_read_register(MAX77650_CNFG_LED_TOP_ADDR) & 0b00001111); 
+  return (MAX77650_read_register(MAX77650_CID_ADDR) & 0b00001111); 
 }
 
 
