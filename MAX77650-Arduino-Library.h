@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+* Copyright (C) 2018 Maxim Integrated Products, Inc., All Rights Reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
@@ -39,6 +39,7 @@
 * 0.4.0       14.03.2018      bugfixes: Interrupt registers are RC (read-clear) and cannot be read bit-by-bit; this is valid for register 0x00, 0x01 and 0x04; corrected wrong register-address in function read CID; cleaned init-function (deleted baseline-init - see examples)
 * 1.0.0	   14.03.2018	     code-review and finished work
 * 1.0.1	   22.03.2018      bugfix: fixed address of register in function MAX77650_getCID; added two more examples
+* 1.0.2       23.09.2018      changed wire-calls to preprocessor directives; 
 * 
 **********************************************************************/
 
@@ -75,8 +76,12 @@
 #define PMIC_partnumber 0x00  //placed PMIC part-numer on the board: MAX77650 or MAX77651
 #define MAX77650_CID 0x78     //OTP option
 #define MAX77650_ADDR 0x48    //alternate ADDR is 0x40
+#ifndef MAX77650_debug
 #define MAX77650_debug false
+#endif
+#ifndef MAX77650_I2C_port
 #define MAX77650_I2C_port 2     //I2C port of the host µC
+#endif
 
 //***** Begin MAX77650 Register Definitions *****
 #define MAX77650_CNFG_GLBL_ADDR 0x10     //Global Configuration Register; Reset Value OTP                           
