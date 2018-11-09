@@ -35,6 +35,7 @@
   Revisions:
   0.1.0       07.03.2018      initial code
   1.0.0       13.03.2018      bugfixes
+  1.0.1       09.11.2018      bugfix
 
 
   The MAX77650/MAX77651 provide highly-integrated battery charging and
@@ -351,6 +352,8 @@ void loop(void)
       MAX77650_setLED_FS2(0);
       switch (MAX77650_getCHG_DTLS())  {
         case 0x0: //Charger is off
+          if ((MAX77650_getCHG_EN() && (MAX77650_getCHGIN_DTLS() == 0b11)))  //switch on green LED only if power supply attached and charger is in off state and charger is enabled
+           MAX77650_setLED_FS1(0x1);          
           if (MAX77650_debug) Serial.println("Charger is off");
           break;
         case 0x1: //Charger is in prequalification mode
